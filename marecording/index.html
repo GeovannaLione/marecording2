@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaRecording | Seu Catálogo de Filmes Premium</title>
+    <meta name="description" content="Explore o melhor catálogo de filmes, do infantil ao adulto, com resenhas exclusivas e curadoria MaRecording.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="width: 60px; height: 60px; border: 6px solid rgba(229,9,20,0.2); border-top-color: var(--primary-red); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px; font-size: 1.5rem; font-weight: 700; color: var(--text-white); animation: pulseText 1.5s infinite;">Carregando...</p>
+    </div>
+
+    <!-- Catalog Intro Animation -->
+    <div id="catalogIntro" class="catalog-intro">
+        <h1 class="catalog-intro-title">MaRecording</h1>
+    </div>
+
+
+    <header id="mainHeader" class="hidden-logo">
+
+        <div class="nav-left">
+            <a href="#" class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="8" fill="#E50914"/>
+                    <path d="M10 10H30V30H10V10Z" fill="white" fill-opacity="0.2"/>
+                    <path d="M20 12L28 28H12L20 12Z" fill="white"/>
+                    <circle cx="20" cy="22" r="3" fill="#E50914"/>
+                </svg>
+                Ma<span>Recording</span>
+            </a>
+        </div>
+        <div class="nav-right" style="display: flex; gap: 20px; align-items: center;">
+            <div class="language-selector" style="border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; padding: 2px 10px; display: flex; align-items: center; background: rgba(0,0,0,0.6);">
+                <i class="fas fa-globe" style="color: white; margin-right: 5px;"></i>
+                <select id="langSelect" style="background: transparent; color: white; border: none; padding: 5px 0; cursor: pointer; outline: none; font-weight: 500; appearance: auto;">
+                    <option style="color: black;" value="pt">Português Brasil</option>
+                    <option style="color: black;" value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+    </header>
+
+    <main>
+        <section class="hero">
+            <div id="heroBgGrid" class="hero-bg-grid"></div>
+            <div class="hero-content center-content">
+                <div class="brand-container">
+                    <h2 class="hero-brand-text">MaRecording</h2>
+                    <div class="giant-m">M</div>
+                </div>
+                <div class="hero-action">
+                    <button class="btn-vamos-la" id="btnVamosLa">Vamos lá <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="catalog-container" id="catalog" style="display: none;">
+            
+            <!-- Filme em Destaque (Estilo Netflix) -->
+            <div class="featured-movie" id="featuredMovie">
+                <div class="featured-content">
+                    <h1 class="featured-title">O Poderoso Chefão</h1>
+                    <p class="featured-desc">O patriarca de uma dinastia do crime organizado transfere o controle de seu império para seu filho relutante. Uma obra-prima do cinema agora disponível em 4K.</p>
+                    <div class="featured-btns">
+                        <button class="btn btn-primary"><i class="fas fa-play"></i> Assistir</button>
+                        <button class="btn btn-secondary glass" id="btnTrailerSetup"><i class="fas fa-video"></i> Trailer</button>
+                    </div>
+
+                    <!-- Painel de Opções do Trailer (Aparece ao clicar em Trailer) -->
+                    <div class="trailer-options" id="trailerOptions">
+                        <h3>Configurações do Trailer</h3>
+                        <div class="option-group">
+                            <span>Áudio:</span>
+                            <button class="opt-btn active" data-opt="audio" data-val="pt">PT</button>
+                            <button class="opt-btn" data-opt="audio" data-val="en">EN</button>
+                        </div>
+                        <div class="option-group">
+                            <span>Legendas:</span>
+                            <button class="opt-btn active" data-opt="subs" data-val="on">Ligadas</button>
+                            <button class="opt-btn" data-opt="subs" data-val="off">Desligadas</button>
+                        </div>
+                        <button class="btn btn-primary btn-full" id="btnStartTrailer">Ver Trailer agora</button>
+                    </div>
+                </div>
+                
+                <!-- Container do Vídeo do Destaque (Escondido inicialmente) -->
+                <div class="featured-video-player" id="featuredVideoPlayer">
+                    <span class="close-video">&times;</span>
+                    <div id="playerContainer"></div>
+                </div>
+            </div>
+
+            <div class="filters" id="genresContainer">
+                <button class="filter-btn active" data-genre="todos">Todos</button>
+                <button class="filter-btn" data-genre="animacao">Animação</button>
+                <button class="filter-btn" data-genre="adulto">Adulto (18+)</button>
+                <button class="filter-btn" data-genre="acao">Ação</button>
+                <button class="filter-btn" data-genre="drama">Drama</button>
+                <button class="filter-btn" data-genre="terror">Terror</button>
+                <button class="filter-btn" data-genre="comedia">Comédia</button>
+            </div>
+
+            <div class="movie-grid" id="movieGrid">
+                <!-- Filmes serão carregados via JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-left" id="modalPoster">
+                <!-- Imagem do poster -->
+            </div>
+            <div class="modal-right">
+                <div class="trailer-container" id="modalTrailer">
+                    <!-- Trailer iframe -->
+                </div>
+                <h2 class="modal-title" id="modalTitle">Título do Filme</h2>
+                <div class="movie-meta">
+                    <span id="modalYear">2023</span> | <span id="modalDuration">120 min</span> | <span class="movie-rating" id="modalRating">9.5</span>
+                </div>
+                <div class="modal-summary">
+                    <h3>Resumo</h3>
+                    <p id="modalDescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+                <div class="modal-review">
+                    <div class="review-title">Nossa Resenha</div>
+                    <p class="review-text" id="modalReview">"Um marco do cinema contemporâneo..."</p>
+                </div>
+                <div class="hero-btns" style="margin-top: 1.5rem; gap: 15px;">
+                    <button class="btn btn-primary btn-large"><i class="fas fa-play"></i> Assistir</button>
+                    <button class="btn btn-secondary glass" id="btnModalTrailerSetup"><i class="fas fa-video"></i> Trailer</button>
+                </div>
+
+                <!-- Painel de Opções do Trailer dentro do Modal -->
+                <div class="trailer-options modal-options" id="modalTrailerOptions">
+                    <h3>Configurar Trailer</h3>
+                    <div class="option-group">
+                        <span>Áudio:</span>
+                        <button class="opt-btn modal-opt active" data-opt="audio" data-val="pt">PT</button>
+                        <button class="opt-btn modal-opt" data-opt="audio" data-val="en">EN</button>
+                    </div>
+                    <div class="option-group">
+                        <span>Legendas:</span>
+                        <button class="opt-btn modal-opt active" data-opt="subs" data-val="on">Ligadas</button>
+                        <button class="opt-btn modal-opt" data-opt="subs" data-val="off">Desligadas</button>
+                    </div>
+                    <button class="btn btn-primary btn-full" id="btnModalStartTrailer">Ver Trailer Amplo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player de Vídeo Amplo Universal -->
+    <div class="universal-video-player" id="universalPlayer">
+        <span class="close-universal">&times;</span>
+        <div class="video-wrapper">
+            <div id="universalPlayerContainer"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-logo">MaRecording</div>
+        <div class="footer-links">
+            <a href="#">Central de Ajuda</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Contato</a>
+        </div>
+        <p>&copy; 2026 MaRecording Entertainment. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
